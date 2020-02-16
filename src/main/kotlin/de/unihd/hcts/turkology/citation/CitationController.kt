@@ -1,5 +1,10 @@
 package de.unihd.hcts.turkology.citation
 
+import de.unihd.hcts.turkology.citation.domain.CitationId
+import de.unihd.hcts.turkology.citation.domain.CitationNumber
+import de.unihd.hcts.turkology.citation.domain.KeywordCode
+import de.unihd.hcts.turkology.citation.domain.Volume
+import de.unihd.hcts.turkology.citation.search.*
 import org.springframework.web.bind.annotation.*
 
 private const val PATH = "/api/citations"

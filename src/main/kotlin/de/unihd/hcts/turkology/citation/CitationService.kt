@@ -1,5 +1,11 @@
 package de.unihd.hcts.turkology.citation
 
+import de.unihd.hcts.turkology.citation.domain.Citation
+import de.unihd.hcts.turkology.citation.domain.CitationId
+import de.unihd.hcts.turkology.citation.search.CitationQuery
+import de.unihd.hcts.turkology.citation.search.Limit
+import de.unihd.hcts.turkology.citation.search.ListOfCitationHits
+import de.unihd.hcts.turkology.citation.search.Skip
 import org.springframework.stereotype.Service
 
 

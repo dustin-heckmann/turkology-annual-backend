@@ -1,6 +1,7 @@
 package de.unihd.hcts.turkology.citation
 
 import com.fasterxml.jackson.module.kotlin.readValue
+import de.unihd.hcts.turkology.citation.search.ListOfCitationHits
 import org.junit.jupiter.api.Test
 import strikt.api.expectThat
 import strikt.assertions.isEqualTo

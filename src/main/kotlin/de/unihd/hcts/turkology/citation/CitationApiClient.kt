@@ -1,6 +1,12 @@
 package de.unihd.hcts.turkology.citation
 
 import com.fasterxml.jackson.module.kotlin.readValue
+import de.unihd.hcts.turkology.citation.domain.Citation
+import de.unihd.hcts.turkology.citation.domain.CitationId
+import de.unihd.hcts.turkology.citation.search.CitationQuery
+import de.unihd.hcts.turkology.citation.search.Limit
+import de.unihd.hcts.turkology.citation.search.ListOfCitationHits
+import de.unihd.hcts.turkology.citation.search.Skip
 import org.apache.http.HttpHost
 import org.elasticsearch.action.get.GetRequest
 import org.elasticsearch.action.search.SearchRequest

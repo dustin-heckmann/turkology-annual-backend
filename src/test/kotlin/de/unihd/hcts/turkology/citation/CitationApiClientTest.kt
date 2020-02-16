@@ -1,5 +1,9 @@
 package de.unihd.hcts.turkology.citation
 
+import de.unihd.hcts.turkology.citation.domain.*
+import de.unihd.hcts.turkology.citation.search.CitationQuery
+import de.unihd.hcts.turkology.citation.search.asLimit
+import de.unihd.hcts.turkology.citation.search.asSkip
 import org.junit.jupiter.api.Test
 import strikt.api.expectThat
 import strikt.assertions.isEmpty
@@ -77,7 +81,7 @@ class CitationApiClientTest() {
 
     @Test
     fun `search citations`() {
-        val searchResponse = client.citations(queryString, pagination)
+        val searchResponse = client.citations(CitationQuery(), 0.asSkip(), 50.asLimit())
         expectThat(searchResponse) {
             get { total }.isGreaterThan(0L)
         }
