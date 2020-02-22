@@ -1,0 +1,4 @@
+elastic:
+  port: 9200
+  host: localhost
+  index: citations
