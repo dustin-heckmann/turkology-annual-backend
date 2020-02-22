@@ -5,11 +5,16 @@ import de.unihd.hcts.turkology.citation.domain.CitationNumber
 import de.unihd.hcts.turkology.citation.domain.KeywordCode
 import de.unihd.hcts.turkology.citation.domain.Volume
 import de.unihd.hcts.turkology.citation.search.*
+import org.springframework.http.CacheControl
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.util.concurrent.TimeUnit
+
 
 private const val PATH = "/api/citations"
 private val DEFAULT_SKIP = 0.asSkip()
 private val DEFAULT_LIMIT = 50.asLimit()
+private val MAX_CACHE_AGE = 30L
 
 @RestController
 @RequestMapping(PATH)
@@ -34,21 +39,19 @@ class CitationController(val service: CitationService) {
             @RequestParam(required = false)
             skip: Skip?
 
-    ): ListOfCitationHits {
-        return service.citations(
-                CitationQuery(
-                        queryString = queryString.asQueryString(),
-                        keyword = keywordString.asKeywordCode(),
-                        volume = volumeString.asVolume(),
-                        number = numberString.asNumber()
-                ),
-                skip ?: DEFAULT_SKIP,
-                limit ?: DEFAULT_LIMIT
-        )
-    }
+    ) = responseWithCacheHeaders(service.citations(
+            CitationQuery(
+                    queryString = queryString.asQueryString(),
+                    keyword = keywordString.asKeywordCode(),
+                    volume = volumeString.asVolume(),
+                    number = numberString.asNumber()
+            ),
+            skip ?: DEFAULT_SKIP,
+            limit ?: DEFAULT_LIMIT
+    ))
 
     @GetMapping("{citationId}")
-    fun citationDetails(@PathVariable(required = true) citationId: CitationId) = service.citation(citationId)
+    fun citationDetails(@PathVariable(required = true) citationId: CitationId) = responseWithCacheHeaders(service.citation(citationId))
 }
 
 private fun String?.asKeywordCode(): KeywordCode? = if (!this.isNullOrEmpty()) KeywordCode(this) else null
@@ -61,3 +64,8 @@ private fun String?.asVolume(): Volume? =
 private fun String?.asNumber(): CitationNumber? =
         if (!this.isNullOrEmpty()) CitationNumber(this) else null
 
+private fun <T> responseWithCacheHeaders(body: T): ResponseEntity<T> {
+    return ResponseEntity.ok()
+            .cacheControl(CacheControl.maxAge(MAX_CACHE_AGE, TimeUnit.MINUTES))
+            .body<T>(body)
+}
