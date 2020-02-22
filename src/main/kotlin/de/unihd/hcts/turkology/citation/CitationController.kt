@@ -16,17 +16,17 @@ private val DEFAULT_LIMIT = 50.asLimit()
 class CitationController(val service: CitationService) {
     @GetMapping
     fun citations(
-            @RequestParam(required = false)
-            q: QueryString?,
+            @RequestParam(required = false, name = "q")
+            queryString: String?,
 
-            @RequestParam(required = false)
-            keyword: KeywordCode?,
+            @RequestParam(required = false, name = "keyword")
+            keywordString: String?,
 
-            @RequestParam(required = false)
-            volume: Volume?,
+            @RequestParam(required = false, name = "volume")
+            volumeString: String?,
 
-            @RequestParam(required = false)
-            number: CitationNumber?,
+            @RequestParam(required = false, name = "number")
+            numberString: String?,
 
             @RequestParam(required = false)
             limit: Limit?,
@@ -37,10 +37,10 @@ class CitationController(val service: CitationService) {
     ): ListOfCitationHits {
         return service.citations(
                 CitationQuery(
-                        queryString = q,
-                        keyword = keyword,
-                        volume = volume,
-                        number = number
+                        queryString = queryString.asQueryString(),
+                        keyword = keywordString.asKeywordCode(),
+                        volume = volumeString.asVolume(),
+                        number = numberString.asNumber()
                 ),
                 skip ?: DEFAULT_SKIP,
                 limit ?: DEFAULT_LIMIT
@@ -50,3 +50,14 @@ class CitationController(val service: CitationService) {
     @GetMapping("{citationId}")
     fun citationDetails(@PathVariable(required = true) citationId: CitationId) = service.citation(citationId)
 }
+
+private fun String?.asKeywordCode(): KeywordCode? = if (!this.isNullOrEmpty()) KeywordCode(this) else null
+
+private fun String?.asQueryString(): QueryString? = if (!this.isNullOrEmpty()) QueryString(this) else null
+
+private fun String?.asVolume(): Volume? =
+        if (!this.isNullOrEmpty()) Volume(this) else null
+
+private fun String?.asNumber(): CitationNumber? =
+        if (!this.isNullOrEmpty()) CitationNumber(this) else null
+

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonValue
 
 data class CitationNumber(@JsonValue val value: Int) {
+    constructor(value: String): this(value.toInt())
 
     companion object {
         @JsonCreator
