@@ -1,4 +1,7 @@
-dist: trusty
+language: java
+dist: xenial
+jdk:
+  - openjdk11
 
 services:
   - docker
