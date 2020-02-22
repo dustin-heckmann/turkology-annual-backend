@@ -28,7 +28,9 @@ repositories {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-elasticsearch")
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-web") {
+        exclude(group = "org.springframework.boot", module = "spring-boot-starter-tomcat")
+    }
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
@@ -38,10 +40,7 @@ dependencies {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
     testImplementation("io.strikt:strikt-core:0.22.2")
-
-    compile("org.springframework.boot:spring-boot-starter-webflux")
-    compile("org.projectreactor:reactor-spring:1.0.1.RELEASE")
-
+    implementation("org.springframework.boot:spring-boot-starter-undertow")
 }
 
 tasks.withType<Test> {
