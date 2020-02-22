@@ -7,6 +7,7 @@ import de.unihd.hcts.turkology.citation.search.CitationQuery
 import de.unihd.hcts.turkology.citation.search.Limit
 import de.unihd.hcts.turkology.citation.search.ListOfCitationHits
 import de.unihd.hcts.turkology.citation.search.Skip
+import de.unihd.hcts.turkology.config.ElasticSearchConfig
 import org.apache.http.HttpHost
 import org.elasticsearch.action.get.GetRequest
 import org.elasticsearch.action.search.SearchRequest
@@ -23,7 +24,6 @@ import org.elasticsearch.search.sort.SortOrder
 import org.springframework.stereotype.Component
 
 
-const val INDEX = "citations"
 val SUMMARY_FIELDS = arrayOf(
         "id",
         "volume",
@@ -37,11 +37,11 @@ val SUMMARY_FIELDS = arrayOf(
 )
 
 @Component
-class CitationApiClient() {
-    val client = RestHighLevelClient(RestClient.builder(HttpHost("localhost", 9200, "http")))
+class CitationApiClient(private val config: ElasticSearchConfig) {
+    val client = RestHighLevelClient(RestClient.builder(HttpHost(config.host, config.port, "http")))
 
     fun citation(citationId: CitationId): Citation {
-        val citationAsJson = GetRequest(INDEX).run {
+        val citationAsJson = GetRequest(config.index).run {
             id(citationId.toString())
             client.get(this, RequestOptions.DEFAULT).sourceAsString
         }
@@ -59,7 +59,6 @@ class CitationApiClient() {
 
 
     private fun buildSearchRequest(skip: Skip, limit: Limit, query: CitationQuery): SearchRequest {
-        val searchRequest = SearchRequest(INDEX)
         val searchSourceBuilder = SearchSourceBuilder().apply {
             fetchSource(
                     SUMMARY_FIELDS,
@@ -78,9 +77,7 @@ class CitationApiClient() {
             searchSourceBuilder.sort(FieldSortBuilder("volume").order(SortOrder.ASC))
             searchSourceBuilder.sort(FieldSortBuilder("number").order(SortOrder.ASC))
         }
-
-
-        return searchRequest.source(searchSourceBuilder)
+        return SearchRequest(config.index).source(searchSourceBuilder)
     }
 
     private fun BoolQueryBuilder.addContentFilters(query: CitationQuery) {
