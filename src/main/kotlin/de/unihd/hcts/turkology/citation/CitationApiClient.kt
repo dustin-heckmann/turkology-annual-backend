@@ -39,13 +39,14 @@ val SUMMARY_FIELDS = arrayOf(
 @Component
 class CitationApiClient(private val config: ElasticSearchConfig) {
     val client = RestHighLevelClient(RestClient.builder(HttpHost(config.host, config.port, "http")))
+    val objectMapper = objectMapper()
 
     fun citation(citationId: CitationId): Citation {
         val citationAsJson = GetRequest(config.index).run {
             id(citationId.toString())
             client.get(this, RequestOptions.DEFAULT).sourceAsString
         }
-        return objectMapper().readValue<Citation>(citationAsJson)
+        return objectMapper.readValue<Citation>(citationAsJson)
     }
 
     fun citations(query: CitationQuery, skip: Skip, limit: Limit): ListOfCitationHits {
@@ -53,10 +54,11 @@ class CitationApiClient(private val config: ElasticSearchConfig) {
         val searchRequest = buildSearchRequest(skip, limit, query)
         val response = client.search(searchRequest, RequestOptions.DEFAULT)
 
-        val objectMapper = objectMapper()
-        val listOfCitationHits = ListOfCitationHits(total = response.hits.totalHits, result = response.hits.hits.map {
-            CitationHit(citation = objectMapper.readValue<Citation>(it.sourceAsString))
-        })
+        val listOfCitationHits = ListOfCitationHits(
+                total = response.hits.totalHits,
+                result = response.hits.hits.map {
+                    CitationHit(objectMapper.readValue<Citation>(it.sourceAsString))
+                })
         return listOfCitationHits
     }
 
