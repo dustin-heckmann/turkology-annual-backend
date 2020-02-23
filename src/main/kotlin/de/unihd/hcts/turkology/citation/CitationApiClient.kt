@@ -49,12 +49,15 @@ class CitationApiClient(private val config: ElasticSearchConfig) {
     }
 
     fun citations(query: CitationQuery, skip: Skip, limit: Limit): ListOfCitationHits {
+
         val searchRequest = buildSearchRequest(skip, limit, query)
         val response = client.search(searchRequest, RequestOptions.DEFAULT)
 
-        return ListOfCitationHits(total = response.hits.totalHits, result = response.hits.hits.map {
-            CitationHit(citation = objectMapper().readValue<Citation>(it.sourceAsString))
+        val objectMapper = objectMapper()
+        val listOfCitationHits = ListOfCitationHits(total = response.hits.totalHits, result = response.hits.hits.map {
+            CitationHit(citation = objectMapper.readValue<Citation>(it.sourceAsString))
         })
+        return listOfCitationHits
     }
 
 
@@ -101,3 +104,4 @@ class CitationApiClient(private val config: ElasticSearchConfig) {
         }
     }
 }
+

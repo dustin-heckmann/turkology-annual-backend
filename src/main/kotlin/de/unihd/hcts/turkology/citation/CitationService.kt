@@ -16,11 +16,9 @@ class CitationService(val citationApiClient: CitationApiClient) {
             query: CitationQuery,
             skip: Skip,
             limit: Limit
-    ): ListOfCitationHits {
-        return citationApiClient.citations(
-                query,
-                skip,
-                limit
-        )
-    }
+    ): ListOfCitationHits = citationApiClient.citations(
+            query,
+            skip,
+            limit
+    )
 }
