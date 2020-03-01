@@ -13,7 +13,7 @@ goal_build() {
 
 ##DOC run: runs the application
 goal_run() {
-  ./gradlew run
+  ./gradlew bootRun
 }
 
 if type -t "goal_$1" &>/dev/null; then
