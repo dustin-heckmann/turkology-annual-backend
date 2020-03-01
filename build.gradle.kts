@@ -11,6 +11,8 @@ group = "de.unihd.hcts"
 version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_11
 
+val arrowVersion = "0.10.4"
+
 val developmentOnly by configurations.creating
 configurations {
     runtimeClasspath {
@@ -41,6 +43,11 @@ dependencies {
     }
     testImplementation("io.strikt:strikt-core:0.22.2")
     implementation("org.springframework.boot:spring-boot-starter-undertow")
+
+    implementation("io.arrow-kt:arrow-core:$arrowVersion")
+    implementation("io.arrow-kt:arrow-syntax:$arrowVersion")
+    implementation("io.arrow-kt:arrow-fx:$arrowVersion")
+    implementation("io.arrow-kt:arrow-mtl:$arrowVersion")
 }
 
 tasks.withType<Test> {

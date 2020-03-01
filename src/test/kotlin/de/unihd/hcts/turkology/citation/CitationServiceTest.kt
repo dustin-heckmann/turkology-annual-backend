@@ -1,18 +1,18 @@
 package de.unihd.hcts.turkology.citation
 
-import de.unihd.hcts.turkology.citation.domain.Citation
-import de.unihd.hcts.turkology.citation.domain.CitationId
+import de.unihd.hcts.turkology.citation.domain.asCitationId
 import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
 import strikt.api.expectThat
 import strikt.assertions.isEqualTo
 
+@SpringBootTest
 class CitationServiceTest {
     @Test
-    fun `get citation by id`() {
-        val service = CitationService(CitationApiClient())
-        val citation: Citation = service.citation(CitationId("1-2"))
-        expectThat(citation) {
-            get { id }.isEqualTo(CitationId("1-2"))
-        }
+    fun `get citation by id`(@Autowired service: CitationService) {
+        val result = service.citation("1-2".asCitationId())
+        expectThat(result.isRight())
+        result.map { expectThat(it) { get { id }.isEqualTo("1-2".asCitationId()) } }
     }
 }
