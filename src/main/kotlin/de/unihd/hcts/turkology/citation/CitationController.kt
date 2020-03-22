@@ -93,6 +93,7 @@ private fun Exception.toErrorResponse(): ResponseEntity<Map<String, Any?>> {
         is IndexNotFound -> BAD_GATEWAY
         else -> INTERNAL_SERVER_ERROR
     }
+    this.printStackTrace()
     return ResponseEntity.status(statusCode).body(mapOf(
             "message" to message,
             "statusReason" to statusCode.reasonPhrase,
